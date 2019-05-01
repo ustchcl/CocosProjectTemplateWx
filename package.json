@@ -1,0 +1,7 @@
+{
+  "devDependencies": {
+    "@types/ramda": "^0.25.0",
+    "ramda": "^0.26.1",
+    "rxjs": "^6.5.1"
+  }
+}
