@@ -30,14 +30,12 @@ export class Example1 extends BaseComponent<State, Action> {
     readonly initial = 0;
 
     start () {
-        this.actions = new Subject<Action>();
         this.onTouchEnd(this.minusButton.node, ActionUnit("Dec"));
         this.onTouchEnd(this.plusButton.node, ActionUnit("Inc"));
         this.onTouchEnd(this.maxButton.node, Action("Set", this.MAX_SIZE));
         this.state = {
             count: new BehaviorSubject<number>(this.initial)
         };
-        this.actions.subscribe({ next: action => this.eval(action) });
         this.state.count.subscribe({ next: count => this.render(count)});
     }
 

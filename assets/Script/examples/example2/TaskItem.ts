@@ -12,7 +12,7 @@ export default class TaskItem extends cc.Component {
     @property(cc.Label)
     taskContentLabel: cc.Label = null;
 
-    render (content: string) {
+    setContent (content: string) {
         this.taskContentLabel.string = content;
     }
 }

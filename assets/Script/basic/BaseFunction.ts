@@ -3,8 +3,22 @@ import { BehaviorSubject, Observable } from "rxjs"
 import * as R from "ramda"
 import { Maybe } from "./Maybe"
 
+/**
+ * 用一个函数更新BehaviorSubject的值，调用其next方法
+ * @param subject 想要更新值的BehaviorSubjuect
+ * @param func 更新函数
+ */
 export function modify<T>(subject: BehaviorSubject<T>, func: Fn<T, T>) {
     subject.next(func(subject.getValue()))
+}
+
+/**
+ * 用一个值覆盖BehaviorSubject的值，调用其next方法
+ * @param subject 想要更新值的BehaviorSubjuect
+ * @param func 想要设置的值
+ */
+export function set<T>(subject: BehaviorSubject<T>, val: T) {
+    subject.next(val);
 }
 
 export function eventToBehavior<T>(

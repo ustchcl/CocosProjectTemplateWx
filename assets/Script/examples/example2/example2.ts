@@ -33,13 +33,11 @@ export default class Example2 extends BaseComponent<State, Action> {
 
 
     start () {
-        this.actions = new Rx.Subject<Action>();
         this.onTouchEndEffect(this.addButton.node, () => Action("AddTask", this.editbox.string));
         this.state = {
             tasks: new Rx.BehaviorSubject<Array<string>>([])
         };
-        this.actions.subscribe({ next: action => this.eval(action) });
-        this.state.tasks.subscribe({ next: tasks => this.render(tasks)});
+        this.state.tasks.subscribe({ next: tasks => this.renderTaskItems(tasks)});
     }
 
     eval (action: Action) {
@@ -54,10 +52,15 @@ export default class Example2 extends BaseComponent<State, Action> {
         }
     }
 
-    render(tasks: Array<string>) {
+    /**
+     * 类似的web框架，是自己建立一个VDOM， 然后Diff VDOM, 判断哪些需要重新渲染。性能会更好
+     * 此处没有实现类似的virtual component, 性能可能会有问题？
+     * @param tasks 任务列表
+     */
+    renderTaskItems(tasks: Array<string>) {
         let genTaskItem = (content: string) => {
             let taskItem = cc.instantiate(this.taskItem).getComponent(TaskItem);
-            taskItem.render(content);
+            taskItem.setContent(content);
             return taskItem;
         }
         this.taskGroup.node.removeAllChildren();

@@ -9,7 +9,7 @@ import { Fn } from './Types';
  * - `eval`: 根据传入的`action`，modify组件的`state`
  */
 export interface Component<State, Action>  {
-    actions: Subject<Action>;
+    // actions: Subject<Action>;
     state: State;
     // render(state: State): void;
     eval(action: Action): void;

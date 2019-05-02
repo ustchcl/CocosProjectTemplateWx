@@ -11,7 +11,7 @@ const {ccclass, property} = cc._decorator
 @ccclass
 export class BaseComponent<State, Action extends Type<any, any>> extends cc.Component implements Component<State, Action> {
     state: State;
-    actions: Subject<Action>;
+    // actions: Subject<Action>;
 
 
     eval (action: Action) {}
@@ -45,10 +45,8 @@ export class BaseComponent<State, Action extends Type<any, any>> extends cc.Comp
      * 将一个action 作为下一个要处理的Action
      */
     fork (action: Action) {
-        if (!this.actions) {
+        if (action) {
             this.eval(action);
-        } else {
-            this.actions.next(action);
         }
     }
 
