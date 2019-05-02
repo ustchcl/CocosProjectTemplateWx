@@ -113,3 +113,12 @@ export function fixLength<T>(arr: Array<T>, n: number): Array<Maybe<T>> {
 export function id<T>(x: T):T {
     return x;
 }
+
+
+export function ifNullThen<T>(val: T, defaultVal: T): T {
+    if (val == undefined) {
+        return defaultVal;
+    } else {
+        return val;
+    }
+}
