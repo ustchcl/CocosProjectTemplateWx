@@ -1,18 +1,21 @@
 import * as R from "ramda"
 import * as Rx from "rxjs"
 import { BaseComponent } from "../../basic/BaseComponent";
-import { Type, Action } from "../../basic/Types";
+import { Type, Action, TypeUnit, ActionUnit } from "../../basic/Types";
 import { modify } from "../../basic/BaseFunction";
 import TaskItem from "./TaskItem";
+import { notifySub } from "../../basic/WxApi";
 /**
  * Copyright  : (C) Chenglin Huang 2019
  * Maintainer : Chenglin Huang <ustchcl@gmail.com>
  */
 type Action
-    = Type<"AddTask", string> 
+    = Type<"AddTask", string>
+    | TypeUnit<"SwitchMode">
 
 type State = {
-    tasks: Rx.BehaviorSubject<Array<string>>
+    tasks: Rx.BehaviorSubject<Array<string>>;
+    subcontextState: Rx.BehaviorSubject<boolean>;
 }
 
 const { ccclass, property } = cc._decorator;
@@ -30,14 +33,22 @@ export default class Example2 extends BaseComponent<State, Action> {
     taskItem: cc.Prefab = null;
     @property(cc.Label)
     btnLabel: cc.Label = null;
+    @property(cc.Button)
+    subButton: cc.Button = null;
+    @property(cc.Label)
+    subLabel: cc.Label = null;
 
 
     start () {
         this.onTouchEndEffect(this.addButton.node, () => Action("AddTask", this.editbox.string));
+        this.onTouchEnd(this.subButton.node, ActionUnit("SwitchMode"));
+
         this.state = {
-            tasks: new Rx.BehaviorSubject<Array<string>>([])
+            tasks: new Rx.BehaviorSubject<Array<string>>([]),
+            subcontextState: new Rx.BehaviorSubject<boolean>(false)
         };
         this.state.tasks.subscribe({ next: tasks => this.renderTaskItems(tasks)});
+        this.state.subcontextState.subscribe({ next: show => this.renderSubState(show) });
     }
 
     eval (action: Action) {
@@ -47,6 +58,10 @@ export default class Example2 extends BaseComponent<State, Action> {
                 if (value != "") {
                     modify(this.state.tasks, R.append(value));
                 }
+                break;
+            }
+            case "SwitchMode": {
+                modify(this.state.subcontextState, R.not);
                 break;
             }
         }
@@ -66,5 +81,10 @@ export default class Example2 extends BaseComponent<State, Action> {
         this.taskGroup.node.removeAllChildren();
         tasks.map(genTaskItem).forEach(ti => ti.node.parent = this.taskGroup.node);
         this.btnLabel.string = `Add #${tasks.length + 1}`;
+    }
+
+    renderSubState(show: boolean) {
+        notifySub(show ? ActionUnit("ShowUserInfo") : ActionUnit("HideUserInfo"));
+        this.subLabel.string = show ? "hide sub" : "show sub";
     }
 }

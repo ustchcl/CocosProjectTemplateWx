@@ -1,6 +1,7 @@
 import { Timer } from "./Timer";
 import { BannerAdUnitId, VedioAdUnitId_1 } from "../core/GameData";
 import { Maybe } from "./Maybe";
+import { Message } from "../Message";
 
 /**
  * Bannder Ad
@@ -79,4 +80,12 @@ export function showMsg(msg: string, msgType: MsgType = "none") {
         icon: msgType,
         duration: 1500
     });
+}
+
+
+/**
+ * 主域和子域交互
+ */
+export function notifySub(msg: Message) {
+    wx.getOpenDataContext().postMessage(msg);
 }
