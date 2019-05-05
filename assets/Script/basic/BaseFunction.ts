@@ -122,3 +122,7 @@ export function ifNullThen<T>(val: T, defaultVal: T): T {
         return val;
     }
 }
+
+export function count<T>(val: T, arr: T[]): number {
+    return R.filter(R.equals(val), arr).length;
+}

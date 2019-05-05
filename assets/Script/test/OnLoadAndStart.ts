@@ -1,3 +1,4 @@
+import test from "ramda/es/test";
 
 /**
  * Copyright  : (C) Chenglin Huang 2018
@@ -17,6 +18,10 @@ export default class OnLoadAndStart extends cc.Component {
 
     start () {
         console.log("start: ", this.name);
+    }
+
+    someFunc() {
+        
     }
 
 }
