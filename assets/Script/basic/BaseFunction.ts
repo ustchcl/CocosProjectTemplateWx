@@ -126,3 +126,25 @@ export function ifNullThen<T>(val: T, defaultVal: T): T {
 export function count<T>(val: T, arr: T[]): number {
     return R.filter(R.equals(val), arr).length;
 }
+
+
+// time info 
+export type TimeInfo = {
+    year: number,
+    month: number,
+    day: number,
+    hour: number,
+    minute: number,
+    seconds: number,
+}
+export function timeInfo(timestamp: number): TimeInfo {
+    let date = new Date(timestamp);
+    return {
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        day: date.getDate(),
+        hour: date.getHours(),
+        minute: date.getMinutes(),
+        seconds: date.getSeconds()
+    }
+}
