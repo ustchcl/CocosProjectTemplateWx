@@ -1,18 +1,21 @@
 import { Timer } from "./Timer";
 import { BannerAdUnitId, VedioAdUnitId_1 } from "../core/GameData";
 import { Maybe } from "./Maybe";
-import { Message } from "../Message";
+import { Subject } from "rxjs";
+
+export function initWxApi() {
+    initBannerAd();
+    initOnShow();
+}
 
 /**
  * Bannder Ad
  */
 let bannerAd: BannderAd = null;
-
 let bannerAdIsReady = false;
-
 let timer: Timer = null;
 
-export function initBannerAd() {
+function initBannerAd() {
     if (bannerAdIsReady) {
         return;
     }
@@ -82,10 +85,78 @@ export function showMsg(msg: string, msgType: MsgType = "none") {
     });
 }
 
+// on show
 
 /**
- * 主域和子域交互
+ * onShow: 从其他场景回到小游戏中触发
  */
-export function notifySub(msg: Message) {
-    wx.getOpenDataContext().postMessage(msg);
+export const onShow = new Subject<OnShowInfo>();
+export type OnShowInfo = {
+    scene: string;
+    query: any;
+    shareTicket: string;
+    referrerInfo: {
+        appId: string;
+        extraData: any;
+    }
 }
+
+function initOnShow() {
+    wx.onShow((info: OnShowInfo) => {
+        onShow.next(info);
+    })
+}
+
+
+// version 
+export type VersionCompare = "Lower" | "Higher" | "Equal"
+
+export function compareVersion(version: string) {
+    let systemInfo = wx.getSystemInfoSync();
+    let currentSDKVersion = systemInfo.SDKVersion;
+    return _doCompareVersion(currentSDKVersion, version);
+}
+
+function _doCompareVersion(_v1: string, _v2: string): VersionCompare {
+    let v1 = _v1.split('.');
+    let v2 = _v2.split('.');
+    var len = Math.max(v1.length, v2.length)
+    while (v1.length < len) {
+        v1.push('0');
+    }
+    while (v2.length < len) {
+        v2.push('0');
+    }
+    for (var i = 0; i < len; i++) {
+        var num1 = parseInt(v1[i]);
+        var num2 = parseInt(v2[i]);
+        if (num1 > num2) {
+            return "Higher";
+        } else if (num1 < num2) {
+            return "Lower";
+        }
+    }
+    return "Equal";
+}
+
+
+// 菜单按钮位置
+export type MenuButtonInfo = {
+    width: number,
+    height: number,
+    top: number,
+    right: number,
+    bottom: number,
+    left: number
+}
+/**
+ * 获取菜单按钮（右上角胶囊按钮）的布局位置信息。坐标信息以屏幕左上角为原点。
+ */
+export function getMenuButtonInfo(): MenuButtonInfo {
+    return wx.getMenuButtonBoundingClientRect();
+}
+
+//////////// 
+// storage
+
+
