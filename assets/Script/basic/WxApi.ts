@@ -2,11 +2,14 @@ import { Timer } from "./Timer";
 import { BannerAdUnitId, VedioAdUnitId_1 } from "../core/GameData";
 import { Maybe } from "./Maybe";
 import { Subject } from "rxjs";
+import { Message } from "../Message";
 
 export function initWxApi() {
     initBannerAd();
     initOnShow();
 }
+
+let wx = window['tt'];
 
 /**
  * Bannder Ad
@@ -57,6 +60,10 @@ export function hideBannerAd() {
     bannerAd && bannerAd.hide();
 }
 
+
+export function notifySub(msg: Message) {
+    wx.getOpenDataContext().postMessage(msg);
+}
 
 /**
  * Vedio Ad
